@@ -10,30 +10,30 @@
 class ActionClient : public rclcpp::Node
 {
 public:
-	using Navigate = custom_interfaces::action::Navigate;
-	using GoalHandleNavigate = rclcpp_action::ClientGoalHandle<Navigate>;
+  using Navigate = custom_interfaces::action::Navigate;
+  using GoalHandleNavigate = rclcpp_action::ClientGoalHandle<Navigate>;
 
-	ActionClient() : Node("action_client")
-	{
-		robot_position_publisher_ = this->create_publisher<geometry_msgs::msg::Point>(
-			"robot_position", 10
-		);
+  ActionClient() : Node("action_client")
+  {
+	  robot_position_publisher_ = this->create_publisher<geometry_msgs::msg::Point>(
+		  "robot_position", 10
+	  );
 
-		timer_ = this->create_wall_timer(
-			std::chrono::milliseconds(300),
-			std::bind(&ActionClient::timer_callback, this)
-		);
+	  timer_ = this->create_wall_timer(
+		  std::chrono::milliseconds(300),
+		  std::bind(&ActionClient::timer_callback, this)
+	  );
 
-		action_client_ = rclcpp_action::create_client<Navigate>(this, "navigate");
+	  action_client_ = rclcpp_action::create_client<Navigate>(this, "navigate");
 
-		RCLCPP_INFO(this->get_logger(), "Waiting for action server...");
+	  RCLCPP_INFO(this->get_logger(), "Waiting for action server...");
 		
-		if (!action_client_->wait_for_action_server(std::chrono::seconds(10)))
-		{
-			RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
-			rclcpp::shutdown();
-		}
-		RCLCPP_INFO(this->get_logger(), "Action server is ready");
+	  if (!action_client_->wait_for_action_server(std::chrono::seconds(10)))
+	  {
+		  RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
+		  rclcpp::shutdown();
+	  }
+		  RCLCPP_INFO(this->get_logger(), "Action server is ready");
 	}
 
 	geometry_msgs::msg::Point desired;
